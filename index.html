@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Мой билет</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" />
+    <link rel="stylesheet" href="index.css" />
+    <style>
+        /* Стили для редактируемых полей */
+        .editable {
+            cursor: pointer;
+            border-bottom: 1px dashed transparent;
+            display: inline-block;
+            min-width: 30px;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+        
+        .editable:hover {
+            border-bottom: 1px dashed #4b4d57;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .editable:focus {
+            border-bottom: 1px solid #4b4d57;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Стили для активной кнопки */
+        .button-12.active .background-13 {
+            background: #f0edf9;
+            transform: scale(0.98);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .button-12 .background-13 {
+            transition: all 0.2s ease;
+        }
+        
+        .button-12:active .background-13 {
+            background: #e8e4f5;
+            transform: scale(0.96);
+        }
+    </style>
+</head>
+<body>
+    <!-- Верхняя фиксированная шапка -->
+    <div class="fixed-header">
+        <div class="groups">
+            <span class="my-ticket">Мой билет</span>
+            <div class="image"></div>
+            <div class="image-1"></div>
+        </div>
+    </div>
+    
+    <div class="main-container">
+        <div class="root">
+            <div class="image-2">
+                <div class="groups-3">
+                    <div class="groups-4">
+                        <div class="background">
+                            <span id="current-time" class="time">14:34</span>
+                            <span id="current-date" class="date">6 декабря</span>
+                            <div class="image-5"></div>
+                        </div>
+                    </div>
+                    <div class="background-6">
+                        <div class="groups-7">
+                            <div class="flex-row">
+                                <div class="background-8"></div>
+                                <span id="countdown-minutes" class="number-44">59</span>
+                                <span id="countdown-seconds" class="number-20">00</span>
+                            </div>
+                            <div class="flex-row-d">
+                                <span class="minutes">Минуты</span>
+                                <span class="seconds">Секунды</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="groups-9">
+                        <div class="background-a"></div>
+                        <div class="groups-b">
+                            <div class="flex-row-bc">
+                                <div class="ticket">
+                                    <span class="ticket-info">1 билет - </span>
+                                    <span class="price">39 </span>
+                                    <span class="currency">₽</span>
+                                </div>
+                                <div class="button">
+                                    <div class="background-c">
+                                        <span class="travel">Проезд</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="mpv-vpopat">МПВ "ВПОПАТ №1"</span>
+                            <div class="image-d"></div>
+                        </div>
+                        <div class="groups-e">
+                            <span id="editable-text" class="ab-531-25 editable" contenteditable="true">AB 531 25</span>
+                            <span id="editable-number" class="no-95 editable" contenteditable="true">№9595</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="groups-f">
+                    <div class="button-10">
+                        <div class="background-11">
+                            <span class="buy-ticket">КУПИТЬ БИЛЕТ</span>
+                        </div>
+                    </div>
+                    <div class="button-12" id="present-button">
+                        <div class="background-13">
+                            <span class="present">предъявить</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Нижнее фиксированное меню -->
+    <div class="fixed-footer">
+        <div class="background-14">
+            <div class="groups-15">
+                <div class="groups-16">
+                    <div class="image-17"></div>
+                    <span class="history">История</span>
+                </div>
+                <div class="groups-18">
+                    <div class="image-19"></div>
+                    <span class="my-ticket-1a">Мой билет</span>
+                </div>
+                <div class="groups-1b">
+                    <div class="image-1c"></div>
+                    <span class="payment">Оплата</span>
+                </div>
+                <div class="groups-1d">
+                    <div class="image-1e"></div>
+                    <span class="menu">Меню</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. Реальное время и дата
+        function updateRealTime() {
+            const now = new Date();
+            
+            // Время (часы:минуты)
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            document.getElementById('current-time').textContent = `${hours}:${minutes}`;
+            
+            // Дата (число месяц)
+            const day = now.getDate();
+            const monthNames = [
+                'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
+                'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'
+            ];
+            const month = monthNames[now.getMonth()];
+            document.getElementById('current-date').textContent = `${day} ${month}`;
+        }
+        
+        // 2. Обратный отсчет 59:00 -> 00:00 -> 59:00
+        let countdownMinutes = 59;
+        let countdownSeconds = 0;
+        
+        function updateCountdown() {
+            const minutesElement = document.getElementById('countdown-minutes');
+            const secondsElement = document.getElementById('countdown-seconds');
+            
+            // Логика отсчета
+            if (countdownSeconds === 0) {
+                if (countdownMinutes === 0) {
+                    // Сбрасываем на 59:00
+                    countdownMinutes = 59;
+                    countdownSeconds = 0;
+                } else {
+                    countdownMinutes--;
+                    countdownSeconds = 59;
+                }
+            } else {
+                countdownSeconds--;
+            }
+            
+            // Обновляем отображение
+            minutesElement.textContent = countdownMinutes.toString().padStart(2, '0');
+            secondsElement.textContent = countdownSeconds.toString().padStart(2, '0');
+        }
+        
+        // 3. Редактируемые поля
+        function setupEditableFields() {
+            const editableText = document.getElementById('editable-text');
+            const editableNumber = document.getElementById('editable-number');
+            
+            // Сохраняем изменения в localStorage
+            function saveToLocalStorage(element, key) {
+                element.addEventListener('blur', function() {
+                    localStorage.setItem(key, this.textContent);
+                });
+                
+                // Загружаем сохраненные данные
+                const savedValue = localStorage.getItem(key);
+                if (savedValue) {
+                    element.textContent = savedValue;
+                }
+            }
+            
+            saveToLocalStorage(editableText, 'ticket-text');
+            saveToLocalStorage(editableNumber, 'ticket-number');
+            
+            // Запрещаем пустые поля
+            editableText.addEventListener('blur', function() {
+                if (!this.textContent.trim()) {
+                    this.textContent = 'AB 531 25';
+                }
+            });
+            
+            editableNumber.addEventListener('blur', function() {
+                if (!this.textContent.trim()) {
+                    this.textContent = '№9595';
+                }
+                // Сохраняем номер с символом №
+                if (!this.textContent.startsWith('№')) {
+                    this.textContent = '№' + this.textContent.replace('№', '');
+                }
+            });
+            
+            // Выделяем весь текст при клике
+            editableText.addEventListener('click', function(e) {
+                if (window.getSelection().toString() === '') {
+                    const range = document.createRange();
+                    range.selectNodeContents(this);
+                    const selection = window.getSelection();
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                }
+            });
+            
+            editableNumber.addEventListener('click', function(e) {
+                if (window.getSelection().toString() === '') {
+                    const range = document.createRange();
+                    range.selectNodeContents(this);
+                    const selection = window.getSelection();
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                }
+            });
+        }
+        
+        // 4. Интерактивность кнопки "предъявить"
+        function setupPresentButton() {
+            const presentButton = document.getElementById('present-button');
+            
+            presentButton.addEventListener('click', function() {
+                // Добавляем/убираем класс active
+                this.classList.toggle('active');
+                
+                // Можно добавить звук или вибрацию (для мобильных)
+                if ('vibrate' in navigator) {
+                    navigator.vibrate(50);
+                }
+                
+                // Можно показать сообщение
+                console.log('Билет предъявлен');
+            });
+        }
+        
+        // 5. Инициализация
+        document.addEventListener('DOMContentLoaded', function() {
+            // Реальное время
+            updateRealTime();
+            setInterval(updateRealTime, 60000); // Каждую минуту
+            
+            // Обратный отсчет
+            updateCountdown(); // Сразу показываем 59:00
+            setInterval(updateCountdown, 1000); // Каждую секунду
+            
+            // Редактируемые поля
+            setupEditableFields();
+            
+            // Кнопка "предъявить"
+            setupPresentButton();
+            
+            // Оптимизация для мобильных
+            if ('ontouchstart' in window) {
+                document.body.style.cursor = 'pointer';
+                document.body.style.overflowX = 'hidden';
+                document.body.style.width = '100%';
+            }
+            
+            // Добавляем отступы для фиксированных элементов
+            adjustForFixedElements();
+        });
+        
+        // 6. Корректировка отступов для фиксированных элементов
+        function adjustForFixedElements() {
+            // Вычисляем высоту фиксированных элементов
+            const fixedHeader = document.querySelector('.fixed-header');
+            const fixedFooter = document.querySelector('.fixed-footer');
+            
+            if (fixedHeader && fixedFooter) {
+                const headerHeight = fixedHeader.offsetHeight;
+                const footerHeight = fixedFooter.offsetHeight;
+                
+                // Добавляем отступы к основному контейнеру
+                document.querySelector('.main-container').style.paddingTop = headerHeight + 'px';
+                document.querySelector('.main-container').style.paddingBottom = footerHeight + 'px';
+            }
+        }
+    </script>
+</body>
+</html>
